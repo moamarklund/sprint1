@@ -40,8 +40,7 @@ bool only_alpha(char str[]){
   int i = 0;
   while(str[i] != '\0'){
     if(isalpha(str[i]) == 0){
-      const char exceptions[] = {' ',',','.'};
-	//{'å', 'ä', 'ö', 'Å', 'Ä', 'Ö', ' ', ',', '.'};
+      const char exceptions[] = {'å', 'ä', 'ö', 'Å', 'Ä', 'Ö', ' ', ',', '.'};
       bool is_exception = false;
       for(int n=0; n<sizeof(exceptions); n++){
 	if(str[i] == exceptions[n])
@@ -209,6 +208,12 @@ void remove_goods(db_t *db){
 void edit_goods(db_t *db){
   bool running = true;
   int value = ask_question_int("Ange numret på den vara du vill ändra:_ ");
+
+  if(value > db->current_index || value < 0){
+    puts("Varan finns ej.");
+    return;
+  }
+
   print_ware(&db->wares[value-1]);
 
   db->copy_flag = EDIT;
@@ -307,6 +312,10 @@ void list_goods(db_t *db){
     }
     else if(answer == 'V'){
       int value = ask_question_int("Ange ett nummer _");
+      if(value > db->current_index || value < 0){
+	puts("Varan finns ej.");
+	return;
+      }
       print_ware(&db->wares[value-1]);
     }
   }
